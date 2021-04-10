@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>  
+<html>
+<head>
+<style>
+.error {color: #FF0000;}
+</style>
+</head>
+<body>  
+
+<?php
+// define variables and set to empty values
+$First_nameErr = $Last_nameErr= $emailErr="";
+$First_name = $Last_name = $email = $comment="";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  if (empty($_POST["First_name"])) {
+    $First_nameErr = "Name is required";
+  } else {
+    $First_name = test_input($_POST["First_name"]);
+    // check if name only contains letters and whitespace
+    if (!preg_match("/^[a-zA-Z-' ]*$/",$First_name)) {
+      $First_nameErr = "Only letters and white space allowed";
+    }
+  }
+}
+
+  if (empty($_POST["Last_name"])) {
+    $Last_nameErr = "Name is required";
+  } else {
+    $Last_name = test_input($_POST["Last_name"]);
+    // check if name only contains letters and whitespace
+    if (!preg_match("/^[a-zA-Z-' ]*$/",$Last_name)) {
+      $Last_nameErr = "Only letters and white space allowed";
+    }
+  }
+  
+  if (empty($_POST["email"])) {
+    $emailErr = "Email is required";
+  } else {
+    $email = test_input($_POST["email"]);
+    // check if e-mail address is well-formed
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      $emailErr = "Invalid email format";
+    }
+  }
+
+  if (empty($_POST["comment"])) {
+    $comment = "";
+  } else {
+    $comment = test_input($_POST["comment"]);
+  }
+
+function test_input($data) {
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
+}
+?>
+
+<p><span class="error">* required field</span></p>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
+  First Name: &nbsp; &nbsp;<input type="text" name="First_name" value="<?php echo $First_name;?>">
+  <span class="error">* <?php echo $First_nameErr;?></span>
+  <br><br>
+  Last Name: &nbsp; &nbsp;<input type="text" name="Last_name" value="<?php echo $Last_name;?>">
+  <span class="error">* <?php echo $Last_nameErr;?></span>
+  <br><br>
+  Email: &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; <input type="text" name="email" value="<?php echo $email;?>">
+  <span class="error">* <?php echo $emailErr;?></span>
+  <br><br>
+  Suggestions: <textarea name="comment" rows="5" cols="22"><?php echo $comment;?></textarea>
+  <br><br>
+  <input type="submit" name="submit" value="Submit">
+</form>
+
+<?php
+echo "First Name: $First_name";
+echo "<br>";
+echo "Last Name:$Last_name";
+echo "<br>";
+echo "Email:$email";
+echo "<br>";
+echo "Suggesstion:$comment";
+?>
+
+</body>
+ </html>
